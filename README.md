@@ -26,7 +26,7 @@ El sistema opera de forma 100% autónoma utilizando **GitHub Actions** como orqu
 La arquitectura se mantiene minimalista y orientada a un único propósito (*Single Responsibility Principle*):
 
 ```text
-📦 portfolio-monitor
+📦 Portfolio-Monitor
  ┣ 📂 .github/workflows
  ┃ ┗ 📜 keep_awake.yml    # Orquestador CI/CD (Cron jobs y ejecución de scripts)
  ┣ 📜 keep_awake.py       # Script principal de Web Automation (Selenium WebDriver)
