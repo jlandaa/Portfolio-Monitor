@@ -6,7 +6,7 @@ on:
     - cron: '0 */4 * * *'
   workflow_dispatch:
 
-# Permiso necesario para que el bot pueda hacer el push del JSON
+# Permiso necesario para que el bot pueda hacer el push de los JSON
 permissions:
   contents: write
 
@@ -21,6 +21,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+          cache: 'pip'
 
       - name: Instalar dependencias
         run: |
@@ -30,11 +31,17 @@ jobs:
       - name: Ejecutar script de Selenium
         run: python keep_awake.py
 
-      - name: Actualizar Badge de Uptime
+      - name: Verificar estado de CI & ETL
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python check_ci_status.py
+
+      - name: Publicar badges si cambió algún estado
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add uptime.json
-          # Solo hace commit si hubo un cambio real en el estado (de ONLINE a OFFLINE o viceversa)
-          git diff --quiet && git diff --staged --quiet || git commit -m "Actualizar estado de Uptime Badge"
-          git push
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add uptime.json ci_status.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(badges): update uptime and ci status"
+            git push
+          fi
