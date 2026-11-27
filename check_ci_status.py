@@ -5,18 +5,21 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 from xml.sax.saxutils import escape
 
-WORKFLOWS = [
-    ("jlandaa", "Retail-Price-Scraper", "etl_fravega.yml"),
+CI_WORKFLOWS = [
     ("jlandaa", "Retail-Price-Scraper", "ci.yml"),
     ("jlandaa", "ETL-ADR-Argentina", "ci.yml"),
     ("jlandaa", "Sales-AI-Chatbot", "ci.yml"),
     ("jlandaa", "Smart-Credit-ML", "ci.yml"),
 ]
 
+ETL_WORKFLOW = ("jlandaa", "Retail-Price-Scraper", "etl_fravega.yml")
+
 UPTIME_JSON = Path("uptime.json")
 UPTIME_SVG = Path("uptime.svg")
 CI_JSON = Path("ci_status.json")
 CI_SVG = Path("ci_status.svg")
+ETL_JSON = Path("etl_status.json")
+ETL_SVG = Path("etl_status.svg")
 
 COLOR_MAP = {
     "brightgreen": "#4c1",
@@ -61,8 +64,8 @@ def consultar_ultimo_estado(owner: str, repo: str, workflow: str, token: str | N
     return conclusion == "success"
 
 
-def construir_payload_badge(aprobados: int, total: int) -> dict[str, object]:
-    """Construye el diccionario de estado para los workflows de CI y ETL."""
+def construir_payload_ci(aprobados: int, total: int) -> dict[str, object]:
+    """Construye el estado consolidado para los 4 workflows de CI."""
     if aprobados == total:
         color = "brightgreen"
     elif aprobados > 0:
@@ -72,9 +75,19 @@ def construir_payload_badge(aprobados: int, total: int) -> dict[str, object]:
 
     return {
         "schemaVersion": 1,
-        "label": "CI & ETL PIPELINES",
+        "label": "CI QUALITY",
         "message": f"{aprobados}/{total} PASSING",
         "color": color,
+    }
+
+
+def construir_payload_etl(ok: bool) -> dict[str, object]:
+    """Construye el estado independiente del pipeline ETL de Frávega."""
+    return {
+        "schemaVersion": 1,
+        "label": "ETL FRÁVEGA",
+        "message": "PASSING" if ok else "FAILING",
+        "color": "brightgreen" if ok else "red",
     }
 
 
@@ -139,23 +152,30 @@ def renderizar_badge_svg(
     )
 
 
-def main() -> None:
-    token = os.getenv("GITHUB_TOKEN")
-    aprobados = sum(
-        consultar_ultimo_estado(owner, repo, workflow, token)
-        for owner, repo, workflow in WORKFLOWS
-    )
-    ci_payload = construir_payload_badge(aprobados, len(WORKFLOWS))
-    CI_JSON.write_text(json.dumps(ci_payload, indent=2) + "\n", encoding="utf-8")
-    CI_SVG.write_text(
+def _guardar_badge(json_path: Path, svg_path: Path, payload: dict[str, object]) -> None:
+    json_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    svg_path.write_text(
         renderizar_badge_svg(
-            str(ci_payload["label"]),
-            str(ci_payload["message"]),
-            str(ci_payload["color"]),
+            str(payload["label"]),
+            str(payload["message"]),
+            str(payload["color"]),
         ),
         encoding="utf-8",
     )
-    print(f"Generados {CI_JSON} y {CI_SVG} -> {ci_payload['message']}")
+    print(f"Generados {json_path} y {svg_path} -> {payload['message']}")
+
+
+def main() -> None:
+    token = os.getenv("GITHUB_TOKEN")
+
+    aprobados_ci = sum(
+        consultar_ultimo_estado(owner, repo, workflow, token)
+        for owner, repo, workflow in CI_WORKFLOWS
+    )
+    _guardar_badge(CI_JSON, CI_SVG, construir_payload_ci(aprobados_ci, len(CI_WORKFLOWS)))
+
+    etl_ok = consultar_ultimo_estado(*ETL_WORKFLOW, token)
+    _guardar_badge(ETL_JSON, ETL_SVG, construir_payload_etl(etl_ok))
 
     if UPTIME_JSON.exists():
         uptime_data = json.loads(UPTIME_JSON.read_text(encoding="utf-8"))
