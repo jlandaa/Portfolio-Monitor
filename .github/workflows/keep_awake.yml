@@ -40,7 +40,7 @@ jobs:
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add uptime.json ci_status.json
+          git add uptime.json ci_status.json uptime.svg ci_status.svg
           if ! git diff --cached --quiet; then
             git commit -m "chore(badges): update uptime and ci status"
             git push
