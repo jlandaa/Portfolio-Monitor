@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "label": "CI & ETL PIPELINES",
-  "message": "5/5 PASSING",
+  "label": "CI QUALITY",
+  "message": "4/4 PASSING",
   "color": "brightgreen"
 }
