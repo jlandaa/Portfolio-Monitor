@@ -1,9 +1,9 @@
 # ⚙️ Portfolio Monitor: DataOps & CI/CD Observability
 
 <p align="left">
-  <a href="[https://github.com/jlandaa/Portfolio-Monitor/actions/workflows/keep_awake.yml](https://github.com/jlandaa/Portfolio-Monitor/actions/workflows/keep_awake.yml)"><img src="[https://raw.githubusercontent.com/jlandaa/Portfolio-Monitor/main/uptime.svg](https://raw.githubusercontent.com/jlandaa/Portfolio-Monitor/main/uptime.svg)" alt="Streamlit Apps Status" /></a>
-  <a href="[https://github.com/jlandaa/Retail-Price-Scraper/actions/workflows/etl_fravega.yml](https://github.com/jlandaa/Retail-Price-Scraper/actions/workflows/etl_fravega.yml)"><img src="[https://raw.githubusercontent.com/jlandaa/Portfolio-Monitor/main/etl_status.svg](https://raw.githubusercontent.com/jlandaa/Portfolio-Monitor/main/etl_status.svg)" alt="ETL Frávega Status" /></a>
-  <a href="[https://github.com/jlandaa/Portfolio-Monitor](https://github.com/jlandaa/Portfolio-Monitor)"><img src="[https://raw.githubusercontent.com/jlandaa/Portfolio-Monitor/main/ci_status.svg](https://raw.githubusercontent.com/jlandaa/Portfolio-Monitor/main/ci_status.svg)" alt="CI Quality Status" /></a>
+  <a href="https://github.com/jlandaa/Portfolio-Monitor/actions/workflows/keep_awake.yml"><img src="./uptime.svg" alt="Streamlit Apps Status" /></a>
+  <a href="https://github.com/jlandaa/Retail-Price-Scraper/actions/workflows/etl_fravega.yml"><img src="./etl_status.svg" alt="ETL Frávega Status" /></a>
+  <a href="https://github.com/jlandaa/Portfolio-Monitor/actions"><img src="./ci_status.svg" alt="CI Quality Status" /></a>
 </p>
 
 [![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/features/actions)
